@@ -19,10 +19,19 @@ class Story:
             if block.options == []:
                 content = block.text
             else:
-                content = str({"text": block.text, "options": block.options})
-            blocks.append({"role": block.role, "content": content})
+                # Properly format the wrapped JSON as the python default serialization uses single ' instead of double "
+                option_str = ''
+                for option in block.options:
+                    if option_str != '':
+                        option_str += ','
+                    option_str += '"' + option + '"'
+                content = '{"text": "' + block.text+ '", "options": [' + option_str + ']}'
+                print("content:", content)
+
+            blocks.append({'role': block.role, 'content': content})
 
         response = openai_api.request_chat_completion(blocks)
+
         self.add_assistant_response(response)
 
     def to_dict(self):
@@ -33,7 +42,8 @@ class Story:
     
 if __name__ == '__main__':
     a = Story()
+
     a.generate_response()
-    #a.add_user_response("Option 2")
-    #a.generate_response();
+    a.add_user_response(a.story_blocks[-1].options[0])
+    a.generate_response()
     print(a.get_story_blocks())

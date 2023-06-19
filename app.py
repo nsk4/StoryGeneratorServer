@@ -20,7 +20,7 @@ def get_story():
 @app.route('/generate', methods=['GET', 'POST']) # TODO: remove GET
 def generate_next_block():
     #selected_option = request.get_json()["option"]
-    selected_option = None
+    selected_option = request.args.get('option')
 
     if selected_option is None:
         app.logger.info("Starting a new story")
@@ -36,6 +36,8 @@ if __name__ == '__main__':
     a = str(story.to_dict())
     b = str(story.flatten_blocks())
 
+
+    
 
     ret = get_story()
     print(ret)
